@@ -2,8 +2,7 @@ script = "/home/sistemas/scripts/vcap.sh"
 pids_path = "/var/vcap/sys/run"
 
 %w{vblob}.each do |service|
-  %w{gateway}.each do |process|
-    puts "#{service}_#{process}"
+  %w{gateway node}.each do |process|
     God.watch do |w|
       w.name = "#{service}_#{process}"
       w.start = "#{script} start #{service}_#{process}"
@@ -21,6 +20,7 @@ pids_path = "/var/vcap/sys/run"
       # determine the state on startup    
       w.transition(:init, { true => :up, false => :start }) do |on|      
         on.condition(:process_running) do |c|        
+          c.interval = 10.seconds
           c.running = true     
         end    
       end     
@@ -28,6 +28,7 @@ pids_path = "/var/vcap/sys/run"
       # determine when process has finished starting    
       w.transition([:start, :restart], :up) do |on|      
         on.condition(:process_running) do |c|        
+          c.interval = 10.seconds
           c.running = true      
         end       
         # failsafe      
@@ -35,6 +36,7 @@ pids_path = "/var/vcap/sys/run"
           c.times = 8        
           c.within = 2.minutes        
           c.transition = :start      
+          c.interval = 10.seconds
         end    
       end     
   
