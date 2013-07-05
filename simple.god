@@ -1,11 +1,17 @@
 # vim: filetype=ruby
+# This 'god' file is only to check CFv1 services.
 script = "/home/sistemas/scripts/vcap.sh"
 pids_path = "/var/vcap/sys/run"
+log_path = "/var/log/god"
 
-%w{vblob}.each do |service|
+# CFv1 Services in our installation:
+# mongodb mysql neo4j postgresql rabbitmq redis vblob 
+%w{vblob rabbitmq}.each do |service|
   %w{gateway node}.each do |process|
     God.watch do |w|
       w.name = "#{service}_#{process}"
+      w.log = "#{log_path}/#{service}.log"
+      w.err_log = " #{log_path}/#{service}_err.log"
       w.start = "#{script} start #{service}_#{process}"
       w.stop = "#{script} stop #{service}_#{process}"
       w.restart = "#{script} restart #{service}_#{process}"
