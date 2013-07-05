@@ -16,6 +16,7 @@ pids_path = "/var/vcap/sys/run"
       w.pid_file = "#{pids_path}/" + (process=="gateway"?"service":"#{process}")
       
       w.behavior(:clean_pid_file)
+      w.keepalive
   
       # determine the state on startup    
       w.transition(:init, { true => :up, false => :start }) do |on|      
