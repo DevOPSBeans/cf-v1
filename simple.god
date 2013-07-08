@@ -6,7 +6,8 @@ log_path = "/var/log/god"
 
 # CFv1 Services in our installation:
 # mongodb mysql neo4j postgresql rabbitmq redis vblob 
-%w{vblob rabbitmq}.each do |service|
+# %w{vblob rabbitmq}.each do |service|
+%w{mongodb mysql neo4j postgresql rabbitmq redis vblob}.each do |service|
   %w{gateway node}.each do |process|
     God.watch do |w|
       w.name = "#{service}_#{process}"
